@@ -27,7 +27,7 @@ const dogSchema = new mongoose.Schema({
     hypoAllergenic: Boolean,
 });
 
-const doggs = mongoose.model('doggs', dogSchema);
+const Dog = mongoose.model('doggs', dogSchema);
 
 // MiddleWare
 app.use(morgan("dev"));
@@ -43,9 +43,9 @@ app.get("/", (req, res) => {
 })
 
  //Index Route
- app.get('/doggs', async (req, res) => {
+ app.get('/dog', async (req, res) => {
     try {
-        res.json(await doggs.find({}));
+        res.json(await Dog.find({}));
     } catch (error) {
         res.status(400).json(error);
     }
@@ -54,9 +54,8 @@ app.get("/", (req, res) => {
 //Show Route
 app.get("/doggs/:id", async (req, res) => {
    try {
-
-    res.json(await doggs[req.params.breedName])
-    console.log(req.params.breedName)
+    res.json(await doggs[req.params.id])
+    console.log(req.params.id)
    } catch (error) {
     res.status(400).json(error);
 }
