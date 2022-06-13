@@ -1,12 +1,33 @@
-// Dependencies
-const express = require("express")
-const PORT = process.env.PORT || 4000
-const cors = require("cors");
-const { Dog } = require("./models");
+require('dotenv').config();
+const { PORT = 4000, MONGODB_URI } = process.env;
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const cors = require('cors');
+const morgan = require('morgan');
 
-//Application Object
-const app = express()
-require("./config/db.connection");
+mongoose.connect(MONGODB_URI);
+
+mongoose.connection
+.on('open', () => console.log('you are connected!'))
+.on('close', () => console.log('you are disconnected!'))
+.on('error', (error) => console.log(error))
+
+
+//Schema model
+const dogSchema = new mongoose.Schema({
+    breed: String,
+    coat: String,
+    size: String,
+    maintenance: String,
+    shedding: String,
+    pollen: Boolean,
+    breedName: String,
+    furAllergen: Boolean,
+    hypoAllergenic: Boolean,
+});
+
+const doggs = mongoose.model('doggs', dogSchema);
 
 // MiddleWare
 app.use(morgan("dev"));
@@ -22,20 +43,41 @@ app.get("/", (req, res) => {
 })
 
  //Index Route
-app.get("/dogs", (req, res) => {
-    res.json(Dog)
+ app.get('/doggs', async (req, res) => {
+    try {
+        res.json(await doggs.find({}));
+    } catch (error) {
+        res.status(400).json(error);
+    }
 })
 
 //Show Route
-app.get("/dogs/:id", (req, res) => {
-    res.json(Dog[req.params.breed])
-    console.log(req.params.breed)
+app.get("/doggs/:id", async (req, res) => {
+   try {
+
+    res.json(await doggs[req.params.breedName])
+    console.log(req.params.breedName)
+   } catch (error) {
+    res.status(400).json(error);
+}
 })
 
 // Create Route
-app.post("/dogs", (req, res) => {
-    dog.push(req.body)
-    res.json(dog)
+app.post('/doggs', async (req, res) => {
+    try {
+        res.json(await doggs.create(req.body))
+    } catch (error) {
+        res.status(400).json(error);
+    }
+})
+
+//Delete Route
+app.delete('/doggs/:id', async (req, res) => {
+    try {
+        res.json(await doggs.findByIdAndRemove(req.params.id))
+    } catch (error) {
+        res.status(400).json(error);
+    }
 })
 
 // Listener
