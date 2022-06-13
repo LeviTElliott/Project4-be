@@ -9,8 +9,8 @@ const app = express()
 require("./config/db.connection");
 
 // MiddleWare
-
-app.use(express.json())
+app.use(morgan("dev"));
+app.use(express.json());
 app.use(cors());
 
 
