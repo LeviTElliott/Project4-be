@@ -1,3 +1,3 @@
 module.exports = {
-    Dog: require('./Dog')
+    dogs: require('./dogs')
 }

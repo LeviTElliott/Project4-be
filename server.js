@@ -1,60 +1,42 @@
 require('dotenv').config();
-const { PORT = 4000, MONGODB_URI } = process.env;
+const { PORT = 4000, MONGODB_URL } = process.env;
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
+require('./config/db.connection');
 
-mongoose.connect(MONGODB_URI);
-
-mongoose.connection
-.on('open', () => console.log('you are connected!'))
-.on('close', () => console.log('you are disconnected!'))
-.on('error', (error) => console.log(error))
+//Model
+const Dog = require('./models');
+const { dogs } = require('./models');
 
 
-//Schema model
-const dogSchema = new mongoose.Schema({
-    breed: String,
-    coat: String,
-    size: String,
-    maintenance: String,
-    shedding: String,
-    pollen: Boolean,
-    breedName: String,
-    furAllergen: Boolean,
-    hypoAllergenic: Boolean,
-});
 
-const Dog = mongoose.model('doggs', dogSchema);
 
 // MiddleWare
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 
-
 // Routes
 app.get("/", (req, res) => {
-    res.json({
-        response: "Hello World"
-    })
+    res.redirect('/dogs')
 })
 
- //Index Route
- app.get('/dog', async (req, res) => {
+ //Get Route
+ app.get('/dogs', async (req, res) => {
     try {
-        res.json(await Dog.find({}));
+        res.json(await dogs.find({}))
     } catch (error) {
-        res.status(400).json(error);
+        res.status(400).json(error)
     }
 })
 
 //Show Route
-app.get("/doggs/:id", async (req, res) => {
+app.get("/dog/:index", async (req, res) => {
    try {
-    res.json(await doggs[req.params.id])
+    res.json(await Dog[req.params.id])
     console.log(req.params.id)
    } catch (error) {
     res.status(400).json(error);
@@ -62,18 +44,18 @@ app.get("/doggs/:id", async (req, res) => {
 })
 
 // Create Route
-app.post('/doggs', async (req, res) => {
+app.post('/dog/:index', async (req, res) => {
     try {
-        res.json(await doggs.create(req.body))
+        res.json(await Dog.create(req.body))
     } catch (error) {
         res.status(400).json(error);
     }
 })
 
 //Delete Route
-app.delete('/doggs/:id', async (req, res) => {
+app.delete('/dog/:index', async (req, res) => {
     try {
-        res.json(await doggs.findByIdAndRemove(req.params.id))
+        res.json(await Dog.findByIdAndRemove(req.params.id))
     } catch (error) {
         res.status(400).json(error);
     }
