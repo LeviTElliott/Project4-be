@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 //Show Route
 app.get("/dog/:index", async (req, res) => {
    try {
-    res.json(await Dog[req.params.id])
+    res.json(await dogs[req.params.id])
     console.log(req.params.id)
    } catch (error) {
     res.status(400).json(error);
@@ -44,9 +44,9 @@ app.get("/dog/:index", async (req, res) => {
 })
 
 // Create Route
-app.post('/dog/:index', async (req, res) => {
+app.post('/dog', async (req, res) => {
     try {
-        res.json(await Dog.create(req.body))
+        res.json(await dogs.create(req.body))
     } catch (error) {
         res.status(400).json(error);
     }
@@ -55,7 +55,7 @@ app.post('/dog/:index', async (req, res) => {
 //Delete Route
 app.delete('/dog/:index', async (req, res) => {
     try {
-        res.json(await Dog.findByIdAndRemove(req.params.id))
+        res.json(await dogs.findByIdAndRemove(req.params.id))
     } catch (error) {
         res.status(400).json(error);
     }
