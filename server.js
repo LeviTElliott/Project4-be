@@ -2,13 +2,11 @@ require('dotenv').config();
 const { PORT = 4000, MONGODB_URL } = process.env;
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
 require('./config/db.connection');
 
 //Model
-const Dog = require('./models');
 const { dogs } = require('./models');
 
 
@@ -34,7 +32,7 @@ app.get("/", (req, res) => {
 })
 
 //Show Route
-app.get("/dog/:index", async (req, res) => {
+app.get("/dogs/:index", async (req, res) => {
    try {
     res.json(await dogs[req.params.id])
     console.log(req.params.id)
@@ -44,7 +42,7 @@ app.get("/dog/:index", async (req, res) => {
 })
 
 // Create Route
-app.post('/dog', async (req, res) => {
+app.post('/dogs', async (req, res) => {
     try {
         res.json(await dogs.create(req.body))
     } catch (error) {
@@ -53,7 +51,7 @@ app.post('/dog', async (req, res) => {
 })
 
 //Delete Route
-app.delete('/dog/:index', async (req, res) => {
+app.delete('/dogs/:index', async (req, res) => {
     try {
         res.json(await dogs.findByIdAndRemove(req.params.id))
     } catch (error) {
